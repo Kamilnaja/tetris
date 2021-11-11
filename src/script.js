@@ -1,9 +1,7 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 const width = 10;
-const height = 20;
-const cellSize = 20;
-const tetromino = [
+let tetromino = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
   { x: 2, y: 0 },
@@ -26,7 +24,6 @@ class Board {
   }
 
   strokeEveryCell() {
-    console.log(this.height);
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
         ctx.strokeRect(
@@ -37,6 +34,39 @@ class Board {
         );
       }
     }
+  }
+
+  drawElement(element) {
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        for (const cell of element) {
+          if (cell.x === x && cell.y === y) {
+            ctx.fillRect(
+              x * this.cellSize,
+              y * this.cellSize,
+              this.cellSize,
+              this.cellSize
+            );
+          }
+        }
+      }
+    }
+  }
+
+  checkBottomCollision() {
+    for (const cell of tetromino) {
+      if (cell.y === this.height) {
+        return true;
+      }
+    }
+  }
+
+  spawnNextTetromino() {
+    tetromino = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 1, y: 2 },
+    ];
   }
 }
 
@@ -58,15 +88,7 @@ const listenKeys = () => {
   });
 };
 
-const drawCurrentTetronimo = (x, y) => {
-  for (const cell of tetromino) {
-    if (cell.x === x && cell.y === y) {
-      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-    }
-  }
-};
-
-const updateTetronimo = (nextCell) => {
+const updateTetromino = (nextCell) => {
   tetromino.push(nextCell);
   tetromino.shift();
 };
@@ -91,9 +113,9 @@ const changeDirection = () => {
   return temp;
 };
 
-const getNextTetronimo = () => {
-  const tetronimos = ['straight', 'square', 't-shape', 'l-shape', 'Skew'];
-  const next = tetronimos[getRand(0, tetronimos.length)];
+const getNextTetromino = () => {
+  const tetrominos = ['straight', 'square', 't-shape', 'l-shape', 'Skew'];
+  const next = tetrominos[getRand(0, tetrominos.length)];
   console.log(next);
 };
 
@@ -102,13 +124,13 @@ const runGame = () => {
   setInterval(() => {
     board.clear();
     board.strokeEveryCell();
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        drawCurrentTetronimo(x, y);
-      }
+    board.drawElement(tetromino);
+
+    if (board.checkBottomCollision()) {
+      board.spawnNextTetromino();
     }
-    updateTetronimo(changeDirection());
-  }, 500);
+    updateTetromino(changeDirection());
+  }, 200);
   listenKeys();
 };
 
