@@ -1,12 +1,10 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
-const width = 10;
 let tetromino = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
   { x: 2, y: 0 },
 ];
-let direction = 'd';
 /* utils */
 const getRand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -17,6 +15,7 @@ class Board {
     this.width = 10;
     this.height = 20;
     this.cellSize = 20;
+    this.direction = 'd';
   }
 
   clear() {
@@ -68,50 +67,43 @@ class Board {
       { x: 1, y: 2 },
     ];
   }
-}
 
-const listenKeys = () => {
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'ArrowDown') {
-      if (direction !== 'u') {
-        direction = 'd';
+  listenKeys() {
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'ArrowDown') {
+        if (this.direction !== 'u') {
+          this.direction = 'd';
+        }
+      } else if (e.code === 'ArrowRight') {
+        if (this.direction !== 'l') {
+          this.direction = 'r';
+        }
+      } else if (e.code === 'ArrowLeft') {
+        if (this.direction !== 'r') {
+          this.direction = 'l';
+        }
       }
-    } else if (e.code === 'ArrowRight') {
-      if (direction !== 'l') {
-        direction = 'r';
-      }
-    } else if (e.code === 'ArrowLeft') {
-      if (direction !== 'r') {
-        direction = 'l';
-      }
-    }
-  });
-};
-
-const updateTetromino = (nextCell) => {
-  tetromino.push(nextCell);
-  tetromino.shift();
-};
-
-const changeDirection = () => {
-  const temp = { x: 0, y: 0 };
-  for (const cell of tetromino) {
-    if (direction === 'r') {
-      temp.x = cell.x + 1;
-      temp.y = cell.y;
-    } else if (direction === 'l') {
-      temp.x = cell.x - 1;
-      temp.y = cell.y;
-    } else if (direction === 'u') {
-      temp.x = cell.x;
-      temp.y = cell.y - 1;
-    } else if (direction === 'd') {
-      temp.x = cell.x;
-      temp.y = cell.y + 1;
-    }
+    });
   }
-  return temp;
-};
+
+  changeDirection() {
+    let temp = [...tetromino];
+    for (let i = 0; i < tetromino.length; i++) {
+      if (this.direction === 'r') {
+        temp[i].x = tetromino[i].x + 1;
+        temp[i].y = tetromino[i].y;
+      } else if (this.direction === 'l') {
+        temp[i].x = tetromino[i].x - 1;
+        temp[i].y = tetromino[i].y;
+      } else if (this.direction === 'd') {
+        temp[i].x = tetromino[i].x;
+        temp[i].y = tetromino[i].y + 1;
+        // todo - run faster
+      }
+    }
+    return temp;
+  }
+}
 
 const getNextTetromino = () => {
   const tetrominos = ['straight', 'square', 't-shape', 'l-shape', 'Skew'];
@@ -129,9 +121,9 @@ const runGame = () => {
     if (board.checkBottomCollision()) {
       board.spawnNextTetromino();
     }
-    updateTetromino(changeDirection());
-  }, 200);
-  listenKeys();
+    tetromino = board.changeDirection();
+  }, 400);
+  board.listenKeys();
 };
 
 runGame();
