@@ -81,37 +81,30 @@ class Board {
     });
   }
 
-  changeDirection() {
+  changeDirection(tetromino) {
+    const temp = JSON.parse(JSON.stringify(tetromino));
     for (let i = 0; i < tetromino.length; i++) {
       if (this.direction === "r") {
-        tetromino[i].x = tetromino[i].x + 1;
-        tetromino[i].y = tetromino[i].y;
-        this.direction = "d";
+        tetromino[i];
+        temp[i].x = tetromino[i].x + 1;
+        temp[i].y = tetromino[i].y;
+        setTimeout(() => (this.direction = "d"), 0);
       } else if (this.direction === "l") {
-        tetromino[i].x = tetromino[i].x - 1;
-        tetromino[i].y = tetromino[i].y;
-        this.direction = "d";
+        temp[i].x = tetromino[i].x - 1;
+        temp[i].y = tetromino[i].y;
+        setTimeout(() => (this.direction = "d"), 0);
+      } else if (this.direction === "d") {
+        temp[i].x = tetromino[i].x;
+        temp[i].y = tetromino[i].y + 1;
       }
-      //  else if (this.direction === 'd') {
-      // temp[i].x = tetromino[i].x;
-      // temp[i].y = tetromino[i].y + 1;
-      // todo - run faster
-      // }
     }
-  }
-
-  moveDown() {
-    for (let i = 0; i < tetromino.length; i++) {
-      tetromino[i].x = tetromino[i].x;
-      tetromino[i].y = tetromino[i].y + 1;
-    }
+    return temp;
   }
 }
 
 const getNextTetromino = () => {
   const tetrominos = ["straight", "square", "t-shape", "l-shape", "Skew"];
   const next = tetrominos[getRand(0, tetrominos.length)];
-  console.log(next);
 };
 
 const runGame = () => {
@@ -123,9 +116,8 @@ const runGame = () => {
     if (board.checkBottomCollision()) {
       board.spawnNextTetromino();
     }
-    board.changeDirection();
-    board.moveDown();
-  }, 1000);
+    tetromino = board.changeDirection(tetromino);
+  }, 500);
   board.listenKeys();
 };
 
