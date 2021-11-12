@@ -71,37 +71,39 @@ class Board {
   listenKeys() {
     document.addEventListener('keydown', (e) => {
       if (e.code === 'ArrowDown') {
-        if (this.direction !== 'u') {
-          this.direction = 'd';
-        }
+        this.direction = 'd';
       } else if (e.code === 'ArrowRight') {
-        if (this.direction !== 'l') {
-          this.direction = 'r';
-        }
+        this.direction = 'r';
       } else if (e.code === 'ArrowLeft') {
-        if (this.direction !== 'r') {
-          this.direction = 'l';
-        }
+        this.direction = 'l';
       }
     });
   }
 
   changeDirection() {
-    let temp = [...tetromino];
     for (let i = 0; i < tetromino.length; i++) {
       if (this.direction === 'r') {
-        temp[i].x = tetromino[i].x + 1;
-        temp[i].y = tetromino[i].y;
+        tetromino[i].x = tetromino[i].x + 1;
+        tetromino[i].y = tetromino[i].y;
+        this.direction = 'd';
       } else if (this.direction === 'l') {
-        temp[i].x = tetromino[i].x - 1;
-        temp[i].y = tetromino[i].y;
-      } else if (this.direction === 'd') {
-        temp[i].x = tetromino[i].x;
-        temp[i].y = tetromino[i].y + 1;
-        // todo - run faster
+        tetromino[i].x = tetromino[i].x - 1;
+        tetromino[i].y = tetromino[i].y;
+        this.direction = 'd';
       }
+      //  else if (this.direction === 'd') {
+      // temp[i].x = tetromino[i].x;
+      // temp[i].y = tetromino[i].y + 1;
+      // todo - run faster
+      // }
     }
-    return temp;
+  }
+
+  moveDown() {
+    for (let i = 0; i < tetromino.length; i++) {
+      tetromino[i].x = tetromino[i].x;
+      tetromino[i].y = tetromino[i].y + 1;
+    }
   }
 }
 
@@ -117,12 +119,12 @@ const runGame = () => {
     board.clear();
     board.strokeEveryCell();
     board.drawElement(tetromino);
-
     if (board.checkBottomCollision()) {
       board.spawnNextTetromino();
     }
-    tetromino = board.changeDirection();
-  }, 400);
+    board.changeDirection();
+    board.moveDown();
+  }, 1000);
   board.listenKeys();
 };
 
