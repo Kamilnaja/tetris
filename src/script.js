@@ -1,9 +1,17 @@
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
-let tetromino = [
-  { x: 0, y: 0 },
-  { x: 1, y: 0 },
-  { x: 2, y: 0 },
+let tetromino = [];
+let fallenTetrominos = [
+  { x: 0, y: 20 },
+  { x: 1, y: 20 },
+  { x: 2, y: 20 },
+  { x: 3, y: 20 },
+  { x: 4, y: 20 },
+  { x: 5, y: 20 },
+  { x: 6, y: 20 },
+  { x: 7, y: 20 },
+  { x: 8, y: 20 },
+  { x: 9, y: 20 },
 ];
 /* utils */
 const getRand = (min, max) => {
@@ -54,19 +62,12 @@ class Board {
 
   checkBottomCollision() {
     for (const cell of tetromino) {
-      if (cell.y === this.height) {
-        return true;
+      for (const fallenCell of fallenTetrominos) {
+        if (cell.y === fallenCell.y && cell.x === fallenCell.x) {
+          return (fallenTetrominos = [...fallenTetrominos, ...tetromino]);
+        }
       }
     }
-  }
-
-  spawnNextTetromino() {
-    tetromino = [
-      { x: 0, y: 0 },
-      { x: 1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 1, y: 1 },
-    ];
   }
 
   listenKeys() {
@@ -100,24 +101,56 @@ class Board {
     }
     return temp;
   }
-}
 
-const getNextTetromino = () => {
-  const tetrominos = ["straight", "square", "t-shape", "l-shape", "Skew"];
-  const next = tetrominos[getRand(0, tetrominos.length)];
-};
+  *spawnNextTetromino() {
+    const straight = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+    ];
+    const square = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+    ];
+    const tShape = [
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: 2 },
+      { x: 1, y: 1 },
+    ];
+    const lShape = [
+      { x: 0, y: 5 },
+      { x: 1, y: 5 },
+      { x: 2, y: 5 },
+      { x: 2, y: 5 },
+    ];
+    const skew = [
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+      { x: 1, y: 2 },
+    ];
+    const tetrominos = [straight, square, tShape, lShape, skew];
+    yield tetrominos[getRand(0, tetrominos.length)];
+  }
+}
 
 const runGame = () => {
   const board = new Board();
+  tetromino = board.spawnNextTetromino().next().value;
   setInterval(() => {
     board.clear();
     board.strokeEveryCell();
     board.drawElement(tetromino);
+    board.drawElement(fallenTetrominos);
     if (board.checkBottomCollision()) {
-      board.spawnNextTetromino();
+      tetromino = board.spawnNextTetromino().next().value;
     }
     tetromino = board.changeDirection(tetromino);
-  }, 500);
+  }, 400);
   board.listenKeys();
 };
 
