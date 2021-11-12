@@ -104,28 +104,28 @@ class Board {
 
   *spawnNextTetromino() {
     const straight = [
-      { x: 0, y: 0 },
-      { x: 1, y: 0 },
-      { x: 2, y: 0 },
-      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 4, y: 3 },
     ];
     const square = [
-      { x: 0, y: 0 },
-      { x: 1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 1, y: 1 },
+      { x: 4, y: 0 },
+      { x: 5, y: 0 },
+      { x: 4, y: 1 },
+      { x: 5, y: 1 },
     ];
     const tShape = [
-      { x: 0, y: 0 },
-      { x: 0, y: 1 },
-      { x: 0, y: 2 },
-      { x: 1, y: 1 },
+      { x: 4, y: 0 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 5, y: 1 },
     ];
     const lShape = [
-      { x: 0, y: 5 },
-      { x: 1, y: 5 },
-      { x: 2, y: 5 },
-      { x: 2, y: 5 },
+      { x: 3, y: 0 },
+      { x: 4, y: 0 },
+      { x: 5, y: 0 },
+      { x: 5, y: 1 },
     ];
     const skew = [
       { x: 0, y: 0 },
