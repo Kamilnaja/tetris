@@ -70,6 +70,14 @@ class Board {
     }
   }
 
+  checkForGameOver() {
+    for (const fallenCell of fallenTetrominos) {
+      if (fallenCell.y === 0) {
+        console.log("game over");
+      }
+    }
+  }
+
   listenKeys() {
     document.addEventListener("keydown", (e) => {
       if (e.code === "ArrowDown") {
@@ -128,10 +136,10 @@ class Board {
       { x: 5, y: 1 },
     ];
     const skew = [
-      { x: 0, y: 0 },
-      { x: 0, y: 1 },
-      { x: 1, y: 1 },
-      { x: 1, y: 2 },
+      { x: 4, y: 0 },
+      { x: 4, y: 1 },
+      { x: 5, y: 1 },
+      { x: 5, y: 2 },
     ];
     const tetrominos = [straight, square, tShape, lShape, skew];
     yield tetrominos[getRand(0, tetrominos.length)];
@@ -144,13 +152,14 @@ const runGame = () => {
   setInterval(() => {
     board.clear();
     board.strokeEveryCell();
-    board.drawElement(tetromino);
-    board.drawElement(fallenTetrominos);
     if (board.checkBottomCollision()) {
       tetromino = board.spawnNextTetromino().next().value;
     }
+    board.drawElement(tetromino);
+    board.drawElement(fallenTetrominos);
     tetromino = board.changeDirection(tetromino);
-  }, 400);
+    board.checkForGameOver();
+  }, 1000);
   board.listenKeys();
 };
 
