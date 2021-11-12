@@ -1,5 +1,5 @@
-const canvas = document.querySelector('#canvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.querySelector("#canvas");
+const ctx = canvas.getContext("2d");
 let tetromino = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
@@ -15,7 +15,7 @@ class Board {
     this.width = 10;
     this.height = 20;
     this.cellSize = 20;
-    this.direction = 'd';
+    this.direction = "d";
   }
 
   clear() {
@@ -63,33 +63,34 @@ class Board {
   spawnNextTetromino() {
     tetromino = [
       { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
       { x: 1, y: 1 },
-      { x: 1, y: 2 },
     ];
   }
 
   listenKeys() {
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'ArrowDown') {
-        this.direction = 'd';
-      } else if (e.code === 'ArrowRight') {
-        this.direction = 'r';
-      } else if (e.code === 'ArrowLeft') {
-        this.direction = 'l';
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "ArrowDown") {
+        this.direction = "d";
+      } else if (e.code === "ArrowRight") {
+        this.direction = "r";
+      } else if (e.code === "ArrowLeft") {
+        this.direction = "l";
       }
     });
   }
 
   changeDirection() {
     for (let i = 0; i < tetromino.length; i++) {
-      if (this.direction === 'r') {
+      if (this.direction === "r") {
         tetromino[i].x = tetromino[i].x + 1;
         tetromino[i].y = tetromino[i].y;
-        this.direction = 'd';
-      } else if (this.direction === 'l') {
+        this.direction = "d";
+      } else if (this.direction === "l") {
         tetromino[i].x = tetromino[i].x - 1;
         tetromino[i].y = tetromino[i].y;
-        this.direction = 'd';
+        this.direction = "d";
       }
       //  else if (this.direction === 'd') {
       // temp[i].x = tetromino[i].x;
@@ -108,7 +109,7 @@ class Board {
 }
 
 const getNextTetromino = () => {
-  const tetrominos = ['straight', 'square', 't-shape', 'l-shape', 'Skew'];
+  const tetrominos = ["straight", "square", "t-shape", "l-shape", "Skew"];
   const next = tetrominos[getRand(0, tetrominos.length)];
   console.log(next);
 };
