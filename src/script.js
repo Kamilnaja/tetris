@@ -92,22 +92,37 @@ class Board {
 
   changeDirection(tetromino) {
     const temp = JSON.parse(JSON.stringify(tetromino));
+    const sortedTetromino = tetromino.sort((item) => item.x);
     for (let i = 0; i < tetromino.length; i++) {
       if (this.direction === "r") {
-        tetromino[i];
-        temp[i].x = tetromino[i].x + 1;
-        temp[i].y = tetromino[i].y;
-        setTimeout(() => (this.direction = "d"), 0);
+        const mostRight = sortedTetromino[sortedTetromino.length - 1].x;
+        console.log(mostRight);
+        if (mostRight < this.width - 1) {
+          temp[i].x = tetromino[i].x + 1;
+          temp[i].y = tetromino[i].y;
+          this.setDirectionDown();
+        } else {
+          this.setDirectionDown();
+        }
       } else if (this.direction === "l") {
-        temp[i].x = tetromino[i].x - 1;
-        temp[i].y = tetromino[i].y;
-        setTimeout(() => (this.direction = "d"), 0);
+        const mostLeft = sortedTetromino[0].x;
+        if (mostLeft > 0) {
+          temp[i].x = tetromino[i].x - 1;
+          temp[i].y = tetromino[i].y;
+          this.setDirectionDown();
+        } else {
+          this.setDirectionDown();
+        }
       } else if (this.direction === "d") {
         temp[i].x = tetromino[i].x;
         temp[i].y = tetromino[i].y + 1;
       }
     }
     return temp;
+  }
+
+  setDirectionDown() {
+    setTimeout(() => (this.direction = "d"), 0);
   }
 
   *spawnNextTetromino() {
