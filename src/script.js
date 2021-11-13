@@ -111,7 +111,12 @@ class Board {
   }
 
   flip() {
-    console.log("flip");
+    console.log(tetromino.name);
+    if ((tetromino.name = "square")) {
+      return;
+    } else if (tetromino.name === "straight") {
+      tetromino.cells = [{ x: tetromino.cells[0].x, y: 0 }, {}, {}, {}];
+    }
   }
 
   changeDirection(tetromino) {
@@ -188,12 +193,8 @@ class Board {
       { name: "lShape", cells: lShape },
       { name: "skew", cells: skew },
     ];
-    // yield square;
     let rand = getRand(0, tetrominos.length);
-    yield {
-      name: tetrominos[rand].name,
-      cells: tetrominos[rand].cells,
-    };
+    yield tetrominos[rand];
   }
 }
 
