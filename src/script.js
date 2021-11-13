@@ -78,6 +78,17 @@ class Board {
     }
   }
 
+  checkForWholeRow() {
+    for (let i = 0; i < this.height; i++) {
+      const tetrominosInRow = fallenTetrominos.filter(
+        (item) => item.y === i
+      ).length;
+      if (tetrominosInRow === 10) {
+        fallenTetrominos = fallenTetrominos.filter((item) => item.y !== i);
+      }
+    }
+  }
+
   listenKeys() {
     document.addEventListener("keydown", (e) => {
       if (e.code === "ArrowDown") {
@@ -96,7 +107,6 @@ class Board {
     for (let i = 0; i < tetromino.length; i++) {
       if (this.direction === "r") {
         const mostRight = sortedTetromino[sortedTetromino.length - 1].x;
-        console.log(mostRight);
         if (mostRight < this.width - 1) {
           temp[i].x = tetromino[i].x + 1;
           temp[i].y = tetromino[i].y;
@@ -174,6 +184,7 @@ const runGame = () => {
     board.drawElement(fallenTetrominos);
     tetromino = board.changeDirection(tetromino);
     board.checkForGameOver();
+    board.checkForWholeRow();
   }, 100);
   board.listenKeys();
 };
