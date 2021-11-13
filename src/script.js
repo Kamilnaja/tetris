@@ -1,18 +1,8 @@
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 let tetromino = [];
-let fallenTetrominos = [
-  { x: 0, y: 20 },
-  { x: 1, y: 20 },
-  { x: 2, y: 20 },
-  { x: 3, y: 20 },
-  { x: 4, y: 20 },
-  { x: 5, y: 20 },
-  { x: 6, y: 20 },
-  { x: 7, y: 20 },
-  { x: 8, y: 20 },
-  { x: 9, y: 20 },
-];
+let fallenTetrominos = [];
+let gameInterval;
 /* utils */
 const getRand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -62,9 +52,18 @@ class Board {
 
   checkBottomCollision() {
     for (const cell of tetromino) {
-      for (const fallenCell of fallenTetrominos) {
-        if (cell.y === fallenCell.y - 1 && cell.x === fallenCell.x) {
-          return (fallenTetrominos = [...fallenTetrominos, ...tetromino]);
+      if (
+        !fallenTetrominos.length ||
+        !fallenTetrominos.find((item) => item.x === cell.x)
+      ) {
+        if (cell.y === this.height - 1) {
+          return (fallenTetrominos = [...tetromino, ...fallenTetrominos]);
+        }
+      } else {
+        for (const fallenCell of fallenTetrominos) {
+          if (cell.y === fallenCell.y - 1 && cell.x === fallenCell.x) {
+            return (fallenTetrominos = [...fallenTetrominos, ...tetromino]);
+          }
         }
       }
     }
@@ -72,8 +71,8 @@ class Board {
 
   checkForGameOver() {
     for (const fallenCell of fallenTetrominos) {
-      if (fallenCell.y === 0) {
-        console.log("game over");
+      if (fallenCell.y === this.height + 1) {
+        clearInterval(gameInterval);
       }
     }
   }
@@ -85,20 +84,30 @@ class Board {
       ).length;
       if (tetrominosInRow === 10) {
         fallenTetrominos = fallenTetrominos.filter((item) => item.y !== i);
+        fallenTetrominos = fallenTetrominos.map((item) => {
+          return { ...item, y: item.y + 1 };
+        });
       }
     }
   }
 
   listenKeys() {
     document.addEventListener("keydown", (e) => {
+      console.log(e.code);
       if (e.code === "ArrowDown") {
         this.direction = "d";
       } else if (e.code === "ArrowRight") {
         this.direction = "r";
       } else if (e.code === "ArrowLeft") {
         this.direction = "l";
+      } else if (e.code === "Space") {
+        this.flip();
       }
     });
+  }
+
+  flip() {
+    console.log("flip");
   }
 
   changeDirection(tetromino) {
@@ -167,6 +176,7 @@ class Board {
       { x: 5, y: 2 },
     ];
     const tetrominos = [straight, square, tShape, lShape, skew];
+    // yield square;
     yield tetrominos[getRand(0, tetrominos.length)];
   }
 }
@@ -174,7 +184,7 @@ class Board {
 const runGame = () => {
   const board = new Board();
   tetromino = board.spawnNextTetromino().next().value;
-  setInterval(() => {
+  gameInterval = setInterval(() => {
     board.clear();
     board.strokeEveryCell();
     if (board.checkBottomCollision()) {
@@ -182,8 +192,8 @@ const runGame = () => {
     }
     board.drawElement(tetromino);
     board.drawElement(fallenTetrominos);
-    tetromino = board.changeDirection(tetromino);
     board.checkForGameOver();
+    tetromino = board.changeDirection(tetromino);
     board.checkForWholeRow();
   }, 100);
   board.listenKeys();
