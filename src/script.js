@@ -181,9 +181,19 @@ class Board {
       { x: 5, y: 1 },
       { x: 5, y: 2 },
     ];
-    const tetrominos = [straight, square, tShape, lShape, skew];
+    const tetrominos = [
+      { name: "straight", cells: straight },
+      { name: "square", cells: square },
+      { name: "tShape", cells: tShape },
+      { name: "lShape", cells: lShape },
+      { name: "skew", cells: skew },
+    ];
     // yield square;
-    yield { name: "skew", cells: tetrominos[getRand(0, tetrominos.length)] };
+    let rand = getRand(0, tetrominos.length);
+    yield {
+      name: tetrominos[rand].name,
+      cells: tetrominos[rand].cells,
+    };
   }
 }
 
