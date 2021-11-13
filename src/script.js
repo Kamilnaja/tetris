@@ -1,6 +1,6 @@
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
-let tetromino = [];
+let tetromino = { name: "", cells: [] };
 let fallenTetrominos = [];
 let gameInterval;
 /* utils */
@@ -83,17 +83,18 @@ class Board {
         (item) => item.y === i
       ).length;
       if (tetrominosInRow === 10) {
-        fallenTetrominos = fallenTetrominos.filter((item) => item.y !== i);
-        fallenTetrominos = fallenTetrominos.map((item) => {
-          return { ...item, y: item.y + 1 };
-        });
+        return (fallenTetrominos = fallenTetrominos
+          .map((item) => ({
+            ...item,
+            y: item.y + 1,
+          }))
+          .filter((item) => item.y < 21));
       }
     }
   }
 
   listenKeys() {
     document.addEventListener("keydown", (e) => {
-      console.log(e.code);
       if (e.code === "ArrowDown") {
         this.direction = "d";
       } else if (e.code === "ArrowRight") {
@@ -112,7 +113,7 @@ class Board {
 
   changeDirection(tetromino) {
     const temp = JSON.parse(JSON.stringify(tetromino));
-    const sortedTetromino = tetromino.sort((item) => item.x);
+    const sortedTetromino = tetromino.sort((itemA, itemB) => itemA.x > itemB.x);
     for (let i = 0; i < tetromino.length; i++) {
       if (this.direction === "r") {
         const mostRight = sortedTetromino[sortedTetromino.length - 1].x;
