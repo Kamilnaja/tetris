@@ -51,18 +51,21 @@ class Board {
   }
 
   checkBottomCollision() {
-    for (const cell of tetromino) {
+    for (const cell of tetromino.cells) {
       if (
         !fallenTetrominos.length ||
         !fallenTetrominos.find((item) => item.x === cell.x)
       ) {
         if (cell.y === this.height - 1) {
-          return (fallenTetrominos = [...tetromino, ...fallenTetrominos]);
+          return (fallenTetrominos = [...tetromino.cells, ...fallenTetrominos]);
         }
       } else {
         for (const fallenCell of fallenTetrominos) {
           if (cell.y === fallenCell.y - 1 && cell.x === fallenCell.x) {
-            return (fallenTetrominos = [...fallenTetrominos, ...tetromino]);
+            return (fallenTetrominos = [
+              ...fallenTetrominos,
+              ...tetromino.cells,
+            ]);
           }
         }
       }
@@ -112,14 +115,16 @@ class Board {
   }
 
   changeDirection(tetromino) {
-    const temp = JSON.parse(JSON.stringify(tetromino));
-    const sortedTetromino = tetromino.sort((itemA, itemB) => itemA.x > itemB.x);
-    for (let i = 0; i < tetromino.length; i++) {
+    const temp = JSON.parse(JSON.stringify(tetromino.cells));
+    const sortedTetromino = tetromino.cells.sort(
+      (itemA, itemB) => itemA.x > itemB.x
+    );
+    for (let i = 0; i < 4; i++) {
       if (this.direction === "r") {
-        const mostRight = sortedTetromino[sortedTetromino.length - 1].x;
+        const mostRight = sortedTetromino[3].x;
         if (mostRight < this.width - 1) {
-          temp[i].x = tetromino[i].x + 1;
-          temp[i].y = tetromino[i].y;
+          temp[i].x = tetromino.cells[i].x + 1;
+          temp[i].y = tetromino.cells[i].y;
           this.setDirectionDown();
         } else {
           this.setDirectionDown();
@@ -127,15 +132,15 @@ class Board {
       } else if (this.direction === "l") {
         const mostLeft = sortedTetromino[0].x;
         if (mostLeft > 0) {
-          temp[i].x = tetromino[i].x - 1;
-          temp[i].y = tetromino[i].y;
+          temp[i].x = tetromino.cells[i].x - 1;
+          temp[i].y = tetromino.cells[i].y;
           this.setDirectionDown();
         } else {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        temp[i].x = tetromino[i].x;
-        temp[i].y = tetromino[i].y + 1;
+        temp[i].x = tetromino.cells[i].x;
+        temp[i].y = tetromino.cells[i].y + 1;
       }
     }
     return temp;
@@ -178,7 +183,7 @@ class Board {
     ];
     const tetrominos = [straight, square, tShape, lShape, skew];
     // yield square;
-    yield tetrominos[getRand(0, tetrominos.length)];
+    yield { name: "skew", cells: tetrominos[getRand(0, tetrominos.length)] };
   }
 }
 
@@ -191,10 +196,10 @@ const runGame = () => {
     if (board.checkBottomCollision()) {
       tetromino = board.spawnNextTetromino().next().value;
     }
-    board.drawElement(tetromino);
+    board.drawElement(tetromino.cells);
     board.drawElement(fallenTetrominos);
     board.checkForGameOver();
-    tetromino = board.changeDirection(tetromino);
+    tetromino.cells = board.changeDirection(tetromino);
     board.checkForWholeRow();
   }, 100);
   board.listenKeys();
