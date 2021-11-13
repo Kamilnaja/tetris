@@ -63,7 +63,7 @@ class Board {
   checkBottomCollision() {
     for (const cell of tetromino) {
       for (const fallenCell of fallenTetrominos) {
-        if (cell.y === fallenCell.y && cell.x === fallenCell.x) {
+        if (cell.y === fallenCell.y - 1 && cell.x === fallenCell.x) {
           return (fallenTetrominos = [...fallenTetrominos, ...tetromino]);
         }
       }
@@ -159,7 +159,7 @@ const runGame = () => {
     board.drawElement(fallenTetrominos);
     tetromino = board.changeDirection(tetromino);
     board.checkForGameOver();
-  }, 1000);
+  }, 100);
   board.listenKeys();
 };
 
