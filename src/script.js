@@ -178,8 +178,8 @@ class Board {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        // temp[i].x = cells[i].x;
-        // temp[i].y = cells[i].y + 1;
+        temp[i].x = cells[i].x;
+        temp[i].y = cells[i].y + 1;
       }
     }
     return temp;
