@@ -112,25 +112,39 @@ class Board {
 
   flip() {
     if (tetromino.name === "straight") {
-      flipForStraight();
+      tetromino = flipForStraight(tetromino);
     } else if (tetromino.name === "tShape") {
-      flipForTShape();
+      tetromino = flipForTShape(tetromino);
     }
 
-    function flipForStraight() {
+    function flipForStraight(tetromino) {
+      const temp = JSON.parse(JSON.stringify(tetromino));
       if (tetromino.position === 0) {
         for (let i = 0; i < tetromino.cells.length; i++) {
-          tetromino.cells[i].y = tetromino.cells[0].y;
-          tetromino.cells[i].x = tetromino.cells[0].x + i;
+          temp.cells[i].y = tetromino.cells[1].y;
+          temp.cells[i].x = tetromino.cells[3].x - 1 + i;
         }
-        tetromino.position = 1;
+        temp.position = 1;
+      } else if (tetromino.position === 1) {
+        for (let i = 0; i < tetromino.cells.length; i++) {
+          temp.cells[i].y = tetromino.cells[3].y - 1 + i;
+          temp.cells[i].x = tetromino.cells[1].x + 1;
+        }
+        temp.position = 2;
+      } else if (tetromino.position === 2) {
+        for (let i = 0; i < tetromino.cells.length; i++) {
+          temp.cells[i].y = tetromino.cells[1].y;
+          temp.cells[i].x = tetromino.cells[2].x + 1 - i;
+        }
+        temp.position = 3;
       } else {
         for (let i = 0; i < tetromino.cells.length; i++) {
-          tetromino.cells[i].y = tetromino.cells[0].y + i;
-          tetromino.cells[i].x = tetromino.cells[0].x;
+          temp.cells[i].y = tetromino.cells[1].y - 1 + i;
+          temp.cells[i].x = tetromino.cells[1].x - 1;
         }
-        tetromino.position = 0;
+        temp.position = 0;
       }
+      return temp;
     }
 
     function flipForTShape() {
@@ -164,8 +178,8 @@ class Board {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        temp[i].x = cells[i].x;
-        temp[i].y = cells[i].y + 1;
+        // temp[i].x = cells[i].x;
+        // temp[i].y = cells[i].y + 1;
       }
     }
     return temp;
@@ -220,7 +234,7 @@ class Board {
       { name: "skew", cells: skew, position: 0 },
     ];
     let rand = getRand(0, tetrominos.length);
-    yield tetrominos[2];
+    yield tetrominos[0];
   }
 }
 
@@ -228,7 +242,6 @@ const runGame = () => {
   const board = new Board();
   tetromino = board.spawnNextTetromino().next().value;
   gameInterval = setInterval(() => {
-    console.log(tetromino.name);
     board.clear();
     board.strokeEveryCell();
     if (board.checkBottomCollision()) {
