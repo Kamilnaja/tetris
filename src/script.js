@@ -1,6 +1,6 @@
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
-let tetromino = { name: "", cells: [] };
+let tetromino = { name: "", position: 0, cells: [] };
 let fallenTetrominos = [];
 let gameInterval;
 /* utils */
@@ -111,25 +111,45 @@ class Board {
   }
 
   flip() {
-    console.log(tetromino.name);
-    if ((tetromino.name = "square")) {
-      return;
-    } else if (tetromino.name === "straight") {
-      tetromino.cells = [{ x: tetromino.cells[0].x, y: 0 }, {}, {}, {}];
+    if (tetromino.name === "straight") {
+      flipForStraight();
+    } else if (tetromino.name === "tShape") {
+      flipForTShape();
+    }
+
+    function flipForStraight() {
+      if (tetromino.position === 0) {
+        for (let i = 0; i < tetromino.cells.length; i++) {
+          tetromino.cells[i].y = tetromino.cells[0].y;
+          tetromino.cells[i].x = tetromino.cells[0].x + i;
+        }
+        tetromino.position = 1;
+      } else {
+        for (let i = 0; i < tetromino.cells.length; i++) {
+          tetromino.cells[i].y = tetromino.cells[0].y + i;
+          tetromino.cells[i].x = tetromino.cells[0].x;
+        }
+        tetromino.position = 0;
+      }
+    }
+
+    function flipForTShape() {
+      if (tetromino.position === 0) {
+      } else if (tetromino.position === 1) {
+      } else {
+      }
     }
   }
 
-  changeDirection(tetromino) {
-    const temp = JSON.parse(JSON.stringify(tetromino.cells));
-    const sortedTetromino = tetromino.cells.sort(
-      (itemA, itemB) => itemA.x > itemB.x
-    );
-    for (let i = 0; i < 4; i++) {
+  changeDirection(cells) {
+    const temp = JSON.parse(JSON.stringify(cells));
+    const sortedTetromino = cells.sort((itemA, itemB) => itemA.x > itemB.x);
+    for (let i = 0; i < cells.length; i++) {
       if (this.direction === "r") {
         const mostRight = sortedTetromino[3].x;
         if (mostRight < this.width - 1) {
-          temp[i].x = tetromino.cells[i].x + 1;
-          temp[i].y = tetromino.cells[i].y;
+          temp[i].x = cells[i].x + 1;
+          temp[i].y = cells[i].y;
           this.setDirectionDown();
         } else {
           this.setDirectionDown();
@@ -137,15 +157,15 @@ class Board {
       } else if (this.direction === "l") {
         const mostLeft = sortedTetromino[0].x;
         if (mostLeft > 0) {
-          temp[i].x = tetromino.cells[i].x - 1;
-          temp[i].y = tetromino.cells[i].y;
+          temp[i].x = cells[i].x - 1;
+          temp[i].y = cells[i].y;
           this.setDirectionDown();
         } else {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        temp[i].x = tetromino.cells[i].x;
-        temp[i].y = tetromino.cells[i].y + 1;
+        temp[i].x = cells[i].x;
+        temp[i].y = cells[i].y + 1;
       }
     }
     return temp;
@@ -186,15 +206,21 @@ class Board {
       { x: 5, y: 1 },
       { x: 5, y: 2 },
     ];
+    const skew2 = [
+      { x: 4, y: 0 },
+      { x: 4, y: 1 },
+      { x: 5, y: 1 },
+      { x: 5, y: 2 },
+    ];
     const tetrominos = [
-      { name: "straight", cells: straight },
-      { name: "square", cells: square },
-      { name: "tShape", cells: tShape },
-      { name: "lShape", cells: lShape },
-      { name: "skew", cells: skew },
+      { name: "straight", cells: straight, position: 0 },
+      { name: "square", cells: square, position: 0 },
+      { name: "tShape", cells: tShape, position: 0 },
+      { name: "lShape", cells: lShape, position: 0 },
+      { name: "skew", cells: skew, position: 0 },
     ];
     let rand = getRand(0, tetrominos.length);
-    yield tetrominos[rand];
+    yield tetrominos[2];
   }
 }
 
@@ -202,6 +228,7 @@ const runGame = () => {
   const board = new Board();
   tetromino = board.spawnNextTetromino().next().value;
   gameInterval = setInterval(() => {
+    console.log(tetromino.name);
     board.clear();
     board.strokeEveryCell();
     if (board.checkBottomCollision()) {
@@ -210,9 +237,9 @@ const runGame = () => {
     board.drawElement(tetromino.cells);
     board.drawElement(fallenTetrominos);
     board.checkForGameOver();
-    tetromino.cells = board.changeDirection(tetromino);
+    tetromino.cells = board.changeDirection(tetromino.cells);
     board.checkForWholeRow();
-  }, 100);
+  }, 300);
   board.listenKeys();
 };
 
