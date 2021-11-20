@@ -119,39 +119,68 @@ class Board {
 
     function flipForStraight(tetromino) {
       const temp = JSON.parse(JSON.stringify(tetromino));
-      if (tetromino.position === 0) {
-        for (let i = 0; i < tetromino.cells.length; i++) {
-          temp.cells[i].y = tetromino.cells[1].y;
-          temp.cells[i].x = tetromino.cells[3].x - 1 + i;
-        }
-        temp.position = 1;
-      } else if (tetromino.position === 1) {
-        for (let i = 0; i < tetromino.cells.length; i++) {
-          temp.cells[i].y = tetromino.cells[3].y - 1 + i;
-          temp.cells[i].x = tetromino.cells[1].x + 1;
-        }
-        temp.position = 2;
-      } else if (tetromino.position === 2) {
-        for (let i = 0; i < tetromino.cells.length; i++) {
-          temp.cells[i].y = tetromino.cells[1].y;
-          temp.cells[i].x = tetromino.cells[2].x + 1 - i;
-        }
-        temp.position = 3;
-      } else {
-        for (let i = 0; i < tetromino.cells.length; i++) {
-          temp.cells[i].y = tetromino.cells[1].y - 1 + i;
-          temp.cells[i].x = tetromino.cells[1].x - 1;
-        }
-        temp.position = 0;
+      switch (tetromino.position) {
+        case 0:
+          for (let i = 0; i < tetromino.cells.length; i++) {
+            temp.cells[i].y = tetromino.cells[1].y;
+            temp.cells[i].x = tetromino.cells[3].x - 1 + i;
+          }
+          temp.position = 1;
+          break;
+        case 1:
+          for (let i = 0; i < tetromino.cells.length; i++) {
+            temp.cells[i].y = tetromino.cells[3].y - 1 + i;
+            temp.cells[i].x = tetromino.cells[1].x + 1;
+          }
+          temp.position = 2;
+          break;
+        case 2:
+          for (let i = 0; i < tetromino.cells.length; i++) {
+            temp.cells[i].y = tetromino.cells[1].y;
+            temp.cells[i].x = tetromino.cells[2].x + 1 - i;
+          }
+          temp.position = 3;
+          break;
+        case 3:
+          for (let i = 0; i < tetromino.cells.length; i++) {
+            temp.cells[i].y = tetromino.cells[1].y - 1 + i;
+            temp.cells[i].x = tetromino.cells[1].x - 1;
+          }
+          temp.position = 0;
+          break;
       }
       return temp;
     }
 
     function flipForTShape() {
-      if (tetromino.position === 0) {
-      } else if (tetromino.position === 1) {
-      } else {
+      let temp = JSON.parse(JSON.stringify(tetromino));
+      switch (tetromino.position) {
+        case 0:
+          temp.cells[3].y = tetromino.cells[1].y - 1;
+          temp.cells[3].x = tetromino.cells[1].x;
+          temp.position = 1;
+          break;
+        case 1:
+          temp.cells[2].y = tetromino.cells[1].y;
+          temp.cells[2].x = tetromino.cells[1].x + 1;
+          temp.position = 2;
+          break;
+        case 2:
+          temp.cells[0].y = tetromino.cells[1].y + 1;
+          temp.cells[0].x = tetromino.cells[1].x;
+          temp.position = 3;
+          break;
+        case 3:
+          temp.cells[0].x = tetromino.cells[0].x - 1;
+          temp.cells[0].y = tetromino.cells[0].y - 1;
+          temp.cells[2].x = temp.cells[2].x - 1;
+          temp.cells[2].y = temp.cells[2].y + 1;
+          temp.cells[3].x = temp.cells[3].x + 1;
+          temp.cells[3].y = temp.cells[3].y + 1;
+          temp.position = 0;
+          break;
       }
+      return temp;
     }
   }
 
@@ -203,7 +232,7 @@ class Board {
       { x: 5, y: 1 },
     ];
     const tShape = [
-      { x: 4, y: 0 },
+      { x: 3, y: 1 },
       { x: 4, y: 1 },
       { x: 4, y: 2 },
       { x: 5, y: 1 },
@@ -232,9 +261,10 @@ class Board {
       { name: "tShape", cells: tShape, position: 0 },
       { name: "lShape", cells: lShape, position: 0 },
       { name: "skew", cells: skew, position: 0 },
+      { name: "skew2", cells: skew2, position: 0 },
     ];
     let rand = getRand(0, tetrominos.length);
-    yield tetrominos[0];
+    yield tetrominos[rand];
   }
 }
 
