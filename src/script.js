@@ -120,6 +120,13 @@ class Board {
         break;
       case "lShape":
         tetromino = flipForLShape(tetromino);
+        break;
+      case "skew":
+        tetromino = flipForSkew(tetromino);
+        break;
+      case "skew2":
+        tetromino = flipForSkew2(tetromino);
+        break;
     }
 
     function flipForStraight(tetromino) {
@@ -226,6 +233,45 @@ class Board {
       }
       return temp;
     }
+
+    function flipForSkew(tetromino) {
+      let temp = JSON.parse(JSON.stringify(tetromino));
+
+      switch (tetromino.position) {
+        case 0:
+          temp.cells[0].y = tetromino.cells[0].y + 1;
+          temp.cells[0].x = tetromino.cells[3].x + 1;
+          temp.cells[1].y = tetromino.cells[1].y + 1;
+          temp.position = 1;
+          break;
+        case 1:
+          temp.cells[0].y = tetromino.cells[0].y - 1;
+          temp.cells[0].x = tetromino.cells[3].x - 1;
+          temp.cells[1].y = tetromino.cells[0].y;
+          temp.cells[0].x = tetromino.cells[3].x - 1;
+          temp.position = 0;
+          break;
+      }
+      return temp;
+    }
+
+    function flipForSkew2(tetromino) {
+      let temp = JSON.parse(JSON.stringify(tetromino));
+
+      switch (tetromino.position) {
+        case 0:
+          temp.cells[0].y = tetromino.cells[3].y;
+          temp.cells[0].x = tetromino.cells[3].x - 1;
+          temp.position = 1;
+          break;
+        case 1:
+          temp.cells[0].y = tetromino.cells[3].y - 2;
+          temp.cells[0].x = tetromino.cells[3].x + 1;
+          temp.position = 0;
+          break;
+      }
+      return temp;
+    }
   }
 
   changeDirection(cells) {
@@ -251,8 +297,8 @@ class Board {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        temp[i].x = cells[i].x;
-        temp[i].y = cells[i].y + 1;
+        // temp[i].x = cells[i].x;
+        // temp[i].y = cells[i].y + 1;
       }
     }
     return temp;
@@ -294,10 +340,10 @@ class Board {
       { x: 5, y: 2 },
     ];
     const skew2 = [
-      { x: 4, y: 0 },
+      { x: 5, y: 0 },
       { x: 4, y: 1 },
       { x: 5, y: 1 },
-      { x: 5, y: 2 },
+      { x: 4, y: 2 },
     ];
     const tetrominos = [
       { name: "straight", cells: straight, position: 0 },
@@ -309,7 +355,7 @@ class Board {
     ];
     let rand = getRand(0, tetrominos.length);
 
-    yield tetrominos[rand];
+    yield tetrominos[tetrominos.length - 1];
   }
 }
 
