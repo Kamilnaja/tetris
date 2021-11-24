@@ -111,10 +111,15 @@ class Board {
   }
 
   flip() {
-    if (tetromino.name === "straight") {
-      tetromino = flipForStraight(tetromino);
-    } else if (tetromino.name === "tShape") {
-      tetromino = flipForTShape(tetromino);
+    switch (tetromino.name) {
+      case "straight":
+        tetromino = flipForStraight(tetromino);
+        break;
+      case "tShape":
+        tetromino = flipForTShape(tetromino);
+        break;
+      case "lShape":
+        tetromino = flipForLShape(tetromino);
     }
 
     function flipForStraight(tetromino) {
@@ -152,7 +157,7 @@ class Board {
       return temp;
     }
 
-    function flipForTShape() {
+    function flipForTShape(tetromino) {
       let temp = JSON.parse(JSON.stringify(tetromino));
       switch (tetromino.position) {
         case 0:
@@ -177,6 +182,45 @@ class Board {
           temp.cells[2].y = temp.cells[2].y + 1;
           temp.cells[3].x = temp.cells[3].x + 1;
           temp.cells[3].y = temp.cells[3].y + 1;
+          temp.position = 0;
+          break;
+      }
+      return temp;
+    }
+
+    function flipForLShape(tetromino) {
+      let temp = JSON.parse(JSON.stringify(tetromino));
+      switch (tetromino.position) {
+        case 0:
+          temp.cells[0].x = tetromino.cells[3].x;
+          temp.cells[0].y = tetromino.cells[3].y + 1;
+          temp.cells[1].x = tetromino.cells[3].x - 1;
+          temp.cells[1].y = tetromino.cells[3].y + 1;
+          temp.position = 1;
+          break;
+        case 1:
+          temp.cells[2].x = tetromino.cells[2].x - 2;
+          temp.cells[2].y = tetromino.cells[2].y + 2;
+          temp.cells[3].x = tetromino.cells[2].x - 2;
+          temp.position = 2;
+          break;
+        case 2:
+          temp.cells[0].y = tetromino.cells[0].y - 2;
+          temp.cells[0].x = tetromino.cells[0].x - 2;
+
+          temp.cells[1].y = tetromino.cells[0].y - 2;
+          temp.cells[1].x = tetromino.cells[0].x - 1;
+          temp.cells[2].y = tetromino.cells[0].y - 1;
+          temp.cells[3].y = tetromino.cells[0].y;
+          temp.position = 3;
+          break;
+        case 3:
+          temp.cells[1].x = tetromino.cells[0].x + 1;
+          temp.cells[1].y = tetromino.cells[0].y;
+          temp.cells[2].x = tetromino.cells[0].x + 2;
+          temp.cells[2].y = tetromino.cells[0].y;
+          temp.cells[3].y = tetromino.cells[0].y + 1;
+          temp.cells[3].x = tetromino.cells[0].x + 2;
           temp.position = 0;
           break;
       }
@@ -264,6 +308,7 @@ class Board {
       { name: "skew2", cells: skew2, position: 0 },
     ];
     let rand = getRand(0, tetrominos.length);
+
     yield tetrominos[rand];
   }
 }
