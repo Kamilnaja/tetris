@@ -263,7 +263,7 @@ class Board {
           temp.cells[0].y = tetromino.cells[1].y + 2;
           temp.cells[0].x = tetromino.cells[1].x + 1;
           temp.cells[3].x = tetromino.cells[1].x + 1;
-          temp.cells[3].y = tetromino.cells[1].y + 3g;
+          temp.cells[3].y = tetromino.cells[1].y + 3;
           temp.position = 1;
           break;
         case 1:
