@@ -260,16 +260,19 @@ class Board {
 
       switch (tetromino.position) {
         case 0:
-          temp.cells[0].y = tetromino.cells[3].y;
-          temp.cells[0].x = tetromino.cells[3].x - 1;
+          temp.cells[0].y = tetromino.cells[1].y + 2;
+          temp.cells[0].x = tetromino.cells[1].x + 1;
+          temp.cells[3].x = tetromino.cells[1].x + 1;
+          temp.cells[3].y = tetromino.cells[1].y + 3g;
           temp.position = 1;
           break;
         case 1:
-          temp.cells[0].y = tetromino.cells[3].y - 2;
-          temp.cells[0].x = tetromino.cells[3].x + 1;
+          temp.cells[0].y = tetromino.cells[1].y - 1;
+          temp.cells[0].x = tetromino.cells[1].x - 1;
           temp.position = 0;
           break;
       }
+      console.log(temp.cells);
       return temp;
     }
   }
