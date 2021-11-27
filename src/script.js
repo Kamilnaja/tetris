@@ -257,22 +257,18 @@ class Board {
 
     function flipForSkew2(tetromino) {
       let temp = JSON.parse(JSON.stringify(tetromino));
-
       switch (tetromino.position) {
         case 0:
-          temp.cells[0].y = tetromino.cells[1].y + 2;
-          temp.cells[0].x = tetromino.cells[1].x + 1;
-          temp.cells[3].x = tetromino.cells[1].x + 1;
-          temp.cells[3].y = tetromino.cells[1].y + 3;
+          temp.cells[0].x = tetromino.cells[0].x - 2;
+          temp.cells[3].y = tetromino.cells[0].y;
           temp.position = 1;
           break;
         case 1:
-          temp.cells[0].y = tetromino.cells[1].y - 1;
-          temp.cells[0].x = tetromino.cells[1].x - 1;
+          temp.cells[0].x = tetromino.cells[1].x + 1;
+          temp.cells[3].y = tetromino.cells[1].y + 1;
           temp.position = 0;
           break;
       }
-      console.log(temp.cells);
       return temp;
     }
   }
@@ -300,8 +296,8 @@ class Board {
           this.setDirectionDown();
         }
       } else if (this.direction === "d") {
-        // temp[i].x = cells[i].x;
-        // temp[i].y = cells[i].y + 1;
+        temp[i].x = cells[i].x;
+        temp[i].y = cells[i].y + 1;
       }
     }
     return temp;
@@ -358,7 +354,7 @@ class Board {
     ];
     let rand = getRand(0, tetrominos.length);
 
-    yield tetrominos[tetrominos.length - 1];
+    yield tetrominos[rand];
   }
 }
 
