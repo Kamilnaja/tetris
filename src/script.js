@@ -74,8 +74,20 @@ class Board {
 
   checkForGameOver() {
     for (const fallenCell of fallenTetrominos) {
-      if (fallenCell.y === this.height + 1) {
+      if (fallenCell.y === 1) {
         clearInterval(gameInterval);
+        ctx.fillStyle = "white";
+        ctx.fillRect(20, 40, this.width * 20 - 40, this.height * 20 - 80);
+        ctx.font = "15px Arial";
+        ctx.fillStyle = "black";
+
+        ctx.textAlign = "center";
+        ctx.fillText("🪂GAME OVER🪂", canvas.width / 2, canvas.height / 2);
+        ctx.fillText(
+          "Refresh to restart",
+          canvas.width / 2,
+          canvas.height / 2 + 20
+        );
       }
     }
   }
@@ -372,7 +384,7 @@ const runGame = () => {
     board.checkForGameOver();
     tetromino.cells = board.changeDirection(tetromino.cells);
     board.checkForWholeRow();
-  }, 300);
+  }, 150);
   board.listenKeys();
 };
 
