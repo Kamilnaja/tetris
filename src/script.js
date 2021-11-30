@@ -1,8 +1,17 @@
+class FallenTetrominos {
+  arr = [];
+  add(tetromino) {
+    // check for whole row
+    this.arr.push(tetromino);
+    console.log(this.arr);
+  }
+}
+
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 let tetromino = { name: "", position: 0, cells: [] };
-let fallenTetrominos = [];
 let gameInterval;
+let fallenTetrominos = new FallenTetrominos();
 /* utils */
 const getRand = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -53,7 +62,7 @@ class Board {
   checkBottomCollision() {
     for (const cell of tetromino.cells) {
       if (
-        !fallenTetrominos.length ||
+        !fallenTetrominos.arr.length ||
         !fallenTetrominos.find((item) => item.x === cell.x)
       ) {
         if (cell.y === this.height - 1) {
@@ -73,7 +82,7 @@ class Board {
   }
 
   checkForGameOver() {
-    for (const fallenCell of fallenTetrominos) {
+    for (const fallenCell of fallenTetrominos.arr) {
       if (fallenCell.y === 1) {
         clearInterval(gameInterval);
         ctx.fillStyle = "white";
@@ -94,7 +103,7 @@ class Board {
 
   checkForWholeRow() {
     for (let i = 0; i < this.height; i++) {
-      const tetrominosInRow = fallenTetrominos.filter(
+      const tetrominosInRow = fallenTetrominos.arr.filter(
         (item) => item.y === i
       ).length;
       if (tetrominosInRow === 10) {
@@ -380,7 +389,7 @@ const runGame = () => {
       tetromino = board.spawnNextTetromino().next().value;
     }
     board.drawElement(tetromino.cells);
-    board.drawElement(fallenTetrominos);
+    board.drawElement(fallenTetrominos.arr);
     board.checkForGameOver();
     tetromino.cells = board.changeDirection(tetromino.cells);
     board.checkForWholeRow();
