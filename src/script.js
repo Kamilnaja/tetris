@@ -14,7 +14,28 @@ class FallenTetrominos {
   }
 
   checkForWholeRow() {
-    console.log("checking for whole row");
+    let rowsToRemove = [];
+    for (let i = 0; i < 20; i++) {
+      if (this._cells.filter((item) => item.y === i).length >= 10) {
+        rowsToRemove.push(i);
+      }
+    }
+
+    if (rowsToRemove.length) {
+      this._cells = this._cells.filter(filterCellsFromFullRows());
+
+      rowsToRemove.forEach((emptyRow) => {
+        this._cells = this._cells.map(moveOneLevelDown(emptyRow));
+      });
+    }
+
+    function moveOneLevelDown(emptyRow) {
+      return (item) => (item.y < emptyRow ? { ...item, y: item.y + 1 } : item);
+    }
+
+    function filterCellsFromFullRows() {
+      return (item) => !rowsToRemove.includes(item.y);
+    }
   }
 }
 
