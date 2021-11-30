@@ -1,9 +1,20 @@
 class FallenTetrominos {
-  arr = [];
+  constructor() {
+    this._cells = [];
+  }
+
+  get cells() {
+    return this._cells;
+  }
+
   add(tetromino) {
     // check for whole row
-    this.arr.push(tetromino);
-    console.log(this.arr);
+    this._cells = [...this._cells, ...tetromino];
+    this.checkForWholeRow();
+  }
+
+  checkForWholeRow() {
+    console.log("checking for whole row");
   }
 }
 
@@ -62,19 +73,18 @@ class Board {
   checkBottomCollision() {
     for (const cell of tetromino.cells) {
       if (
-        !fallenTetrominos.arr.length ||
-        !fallenTetrominos.find((item) => item.x === cell.x)
+        !fallenTetrominos.cells.length ||
+        !fallenTetrominos.cells.find((item) => item.x === cell.x)
       ) {
         if (cell.y === this.height - 1) {
-          return (fallenTetrominos = [...tetromino.cells, ...fallenTetrominos]);
+          fallenTetrominos.add(tetromino.cells);
+          return true;
         }
       } else {
-        for (const fallenCell of fallenTetrominos) {
+        for (const fallenCell of fallenTetrominos.cells) {
           if (cell.y === fallenCell.y - 1 && cell.x === fallenCell.x) {
-            return (fallenTetrominos = [
-              ...fallenTetrominos,
-              ...tetromino.cells,
-            ]);
+            fallenTetrominos.add(tetromino.cells);
+            return true;
           }
         }
       }
@@ -82,7 +92,7 @@ class Board {
   }
 
   checkForGameOver() {
-    for (const fallenCell of fallenTetrominos.arr) {
+    for (const fallenCell of fallenTetrominos.cells) {
       if (fallenCell.y === 1) {
         clearInterval(gameInterval);
         ctx.fillStyle = "white";
@@ -97,22 +107,6 @@ class Board {
           canvas.width / 2,
           canvas.height / 2 + 20
         );
-      }
-    }
-  }
-
-  checkForWholeRow() {
-    for (let i = 0; i < this.height; i++) {
-      const tetrominosInRow = fallenTetrominos.arr.filter(
-        (item) => item.y === i
-      ).length;
-      if (tetrominosInRow === 10) {
-        return (fallenTetrominos = fallenTetrominos
-          .map((item) => ({
-            ...item,
-            y: item.y + 1,
-          }))
-          .filter((item) => item.y < 21));
       }
     }
   }
@@ -389,10 +383,9 @@ const runGame = () => {
       tetromino = board.spawnNextTetromino().next().value;
     }
     board.drawElement(tetromino.cells);
-    board.drawElement(fallenTetrominos.arr);
+    board.drawElement(fallenTetrominos.cells);
     board.checkForGameOver();
     tetromino.cells = board.changeDirection(tetromino.cells);
-    board.checkForWholeRow();
   }, 150);
   board.listenKeys();
 };
